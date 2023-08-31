@@ -35,12 +35,19 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             TextFormField(
               controller: _emailController,
+              keyboardType: TextInputType.emailAddress,
+              decoration: const InputDecoration(hintText: "Enter an Email"),
             ), //email
             TextFormField(
               controller: _passwordController,
+              obscureText: true,
+              decoration: const InputDecoration(hintText: "Enter a Password"),
             ), //password
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                debugPrint("Email: ${_emailController.text}");
+                debugPrint("Password: ${_passwordController.text}");
+              },
               child: const Text("Submit"),
             )
           ],
