@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_twit/signup.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 void main() {
   runApp(const MyApp());
@@ -38,8 +39,13 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Image(
-                image: AssetImage('assets/twitter_blue.png'), width: 100),
+            const FaIcon(
+              FontAwesomeIcons.twitter,
+              color: Colors.blue,
+              size: 70,
+            ),
+            // const Image(
+            //     image: AssetImage('assets/twitter_blue.png'), width: 100),
             const SizedBox(
               height: 20,
             ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -8,7 +9,7 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
-  final GlobalKey<FormState> _signInKey = GlobalKey();
+  final GlobalKey<FormState> _signUpKey = GlobalKey();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final RegExp emailValid = RegExp(
@@ -17,12 +18,17 @@ class _SignUpState extends State<SignUp> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Form(
-        key: _signInKey,
+        key: _signUpKey,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Image(
-                image: AssetImage('assets/twitter_blue.png'), width: 100),
+            const FaIcon(
+              FontAwesomeIcons.twitter,
+              color: Colors.blue,
+              size: 70,
+            ),
+            // const Image(
+            //     image: AssetImage('assets/twitter_blue.png'), width: 100),
             const SizedBox(
               height: 20,
             ),
@@ -91,7 +97,7 @@ class _SignUpState extends State<SignUp> {
                   color: Colors.blue, borderRadius: BorderRadius.circular(30)),
               child: TextButton(
                 onPressed: () {
-                  if (_signInKey.currentState!.validate()) {
+                  if (_signUpKey.currentState!.validate()) {
                     debugPrint("Email: ${_emailController.text}");
                     debugPrint("Password: ${_passwordController.text}");
                   }
