@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "473273471612",
+    "project_id": "fluttter-twitter",
+    "storage_bucket": "fluttter-twitter.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:473273471612:android:7135afd044c3d261482ff9",
+        "android_client_info": {
+          "package_name": "com.simpleittools.flutter_twit"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAD2z2uWDTA8U1V6DBXAafw1DQBnunY7DE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
