@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+import '../models/user.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -9,11 +12,16 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
-  final GlobalKey<FormState> _signUpKey = GlobalKey();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final RegExp emailValid = RegExp(
-      r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+_/=>^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final GlobalKey<FormState> _signUpKey = GlobalKey<FormState>();
+
+  RegExp emailValid = RegExp(
+      r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,18 +30,15 @@ class _SignUpState extends State<SignUp> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const FaIcon(
-              FontAwesomeIcons.twitter,
-              color: Colors.blue,
-              size: 70,
+            const Image(
+              image: AssetImage('assets/twitter_blue.png'),
+              width: 100,
             ),
-            // const Image(
-            //     image: AssetImage('assets/twitter_blue.png'), width: 100),
             const SizedBox(
               height: 20,
             ),
             const Text(
-              "Sign Up to Twitter",
+              'Sign up to Twitter',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             Container(
@@ -44,26 +49,24 @@ class _SignUpState extends State<SignUp> {
                 borderRadius: BorderRadius.circular(30),
               ),
               child: TextFormField(
-                controller: _emailController,
+                controller: emailController,
                 keyboardType: TextInputType.emailAddress,
                 decoration: const InputDecoration(
-                  hintText: "Enter an Email",
+                  hintText: 'Enter your email',
                   border: InputBorder.none,
                   contentPadding:
                       EdgeInsets.symmetric(vertical: 15, horizontal: 20),
                 ),
-                validator: (value) {
+                validator: (String? value) {
                   if (value == null || value.isEmpty) {
-                    return "Please enter an email";
-                  }
-                  if (!emailValid.hasMatch(value)) {
-                    return "Please enter a valid email";
+                    return 'Please enter some text';
+                  } else if (!emailValid.hasMatch(value)) {
+                    return 'Please enter a valid email';
                   }
                   return null;
                 },
               ),
             ),
-            //email
             Container(
               margin: const EdgeInsets.all(15),
               padding: const EdgeInsets.symmetric(vertical: 10),
@@ -72,48 +75,65 @@ class _SignUpState extends State<SignUp> {
                 borderRadius: BorderRadius.circular(30),
               ),
               child: TextFormField(
-                controller: _passwordController,
+                controller: passwordController,
                 obscureText: true,
                 decoration: const InputDecoration(
-                  hintText: "Enter a Password",
+                  hintText: 'Password',
                   border: InputBorder.none,
                   contentPadding:
                       EdgeInsets.symmetric(vertical: 15, horizontal: 20),
                 ),
-                validator: (value) {
+                validator: (String? value) {
                   if (value == null || value.isEmpty) {
-                    return "Please enter a password";
-                  }
-                  if (value.length < 6) {
-                    return "Password must be at least 6 characters";
+                    return 'Please enter a password';
+                  } else if (value.length < 6) {
+                    return 'Password must be at least 6 letters';
                   }
                   return null;
                 },
               ),
-            ), //password
+            ),
+            const SizedBox(
+              height: 20,
+            ),
             Container(
               width: 250,
               decoration: BoxDecoration(
                   color: Colors.blue, borderRadius: BorderRadius.circular(30)),
               child: TextButton(
-                onPressed: () {
+                onPressed: () async {
                   if (_signUpKey.currentState!.validate()) {
-                    debugPrint("Email: ${_emailController.text}");
-                    debugPrint("Password: ${_passwordController.text}");
+                    try {
+                      await _auth.createUserWithEmailAndPassword(
+                        email: emailController.text,
+                        password: passwordController.text,
+                      );
+                      await _firestore.collection("users").add(
+                            FirebaseUser(email: emailController.text).toMap(),
+                          );
+                      if (!mounted) return;
+                      Navigator.pop(context);
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(e.toString())),
+                      );
+                    }
                   }
                 },
                 child: const Text(
-                  "Sign Up",
+                  'Sign Up',
                   style: TextStyle(color: Colors.white, fontSize: 18),
                 ),
               ),
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.pop(context);
               },
-              child: const Text("Already have an account? Sign in here"),
-            )
+              child: const Text(
+                'Already have an account? Log in',
+              ),
+            ),
           ],
         ),
       ),
